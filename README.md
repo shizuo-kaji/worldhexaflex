@@ -11,7 +11,8 @@ The world-map model was designed by Lai Hsin-Yu and Kai-Hsiang Wang during the
 
 ## Web app
 
-**Open it here: <https://shizuo-kaji.github.io/worldhexaflex/>** (English / Japanese; nothing to install).
+**[Open the web app](https://shizuo-kaji.github.io/worldhexaflex/)**.
+
 It also runs offline: download this repository and open [webapp/index.html](webapp/index.html) in a browser.
 
 - Upload several photos and crop a hexagon for each face (drag to move, wheel/pinch to zoom, rotate).
@@ -24,9 +25,8 @@ It also runs offline: download this repository and open [webapp/index.html](weba
 ## Paper model
 
 - [worldmap_hexagon_all.pdf](worldmap_hexagon_all.pdf): the six-faced hexaflexagon with a conformally printed world map.
-- [instruction_hexaflexa_long.pdf](instruction_hexaflexa_long.pdf): a detailed, illustrated guide to folding the hexaflexagon and the Kaleidocycle ([Japanese version](instruction_hexaflexa_long_jp.pdf)).
+- [instruction_hexaflexa_long.pdf](instruction_hexaflexa_long.pdf): a detailed, illustrated guide to folding the hexaflexagon and the [Kaleidocycle](https://github.com/shizuo-kaji/Kaleidocycle).
 - [instruction_short.pdf](instruction_short.pdf): a one-page summary of the above (in Japanese).
-- [paper-K8.pdf](paper-K8.pdf), [paper-K9.pdf](paper-K9.pdf): Kaleidocycle nets with 8 and 9 tetrahedra.
 
 What you need: a colour printer, scissors, glue or adhesive tape, and patience.
 Print worldmap_hexagon_all.pdf, cut out the three pieces, and follow instruction_hexaflexa_long.pdf to assemble them.

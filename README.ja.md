@@ -9,7 +9,8 @@
 
 ## Webアプリ
 
-**こちらから使えます：<https://shizuo-kaji.github.io/worldhexaflex/>**（日英対応・インストール不要）．
+**[Webアプリを開く](https://shizuo-kaji.github.io/worldhexaflex/)**．
+
 このリポジトリをダウンロードして [webapp/index.html](webapp/index.html) をブラウザで開けば，オフラインでも動きます．
 
 - 写真を複数アップロードし，拡大縮小・回転しながら各面の六角形を切り取れます．
@@ -22,12 +23,11 @@
 ## 展開図と説明書
 
 - [worldmap_hexagon_all.pdf](worldmap_hexagon_all.pdf): 世界地図ヘクサフレクサゴン（6面）の展開図
-- [instruction_hexaflexa_long_jp.pdf](instruction_hexaflexa_long_jp.pdf): ヘクサフレクサゴンとカライドサイクルの折り方の説明（[英語版](instruction_hexaflexa_long.pdf)）
+- [instruction_hexaflexa_long_jp.pdf](instruction_hexaflexa_long_jp.pdf): ヘクサフレクサゴンと[カライドサイクル](https://github.com/shizuo-kaji/Kaleidocycle)の折り方の説明（写真つき）
 - [instruction_short.pdf](instruction_short.pdf): 上記の簡易版（1ページ）
-- [paper-K8.pdf](paper-K8.pdf), [paper-K9.pdf](paper-K9.pdf): カライドサイクル（四面体8個・9個）の展開図
 
 用意するもの：カラープリンタ，はさみ，のりまたは両面テープ，根気．
-worldmap_hexagon_all.pdf を印刷して3つのパーツを切り取り，説明書に従って組み立てます．
+worldmap_hexagon_all.pdf を印刷して3つのパーツを切り取り，instruction_hexaflexa_long_jp.pdf に従って組み立てます．
 
 ## クレジット
 
