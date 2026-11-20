@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hexaflexagon Studio</title>
+  <meta name="description" content="Design, print, fold and play with hexaflexagons: use your own photos or conformal world maps (Schwarz–Christoffel mapping). English / Japanese.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-1.1 -1.1 2.2 2.2'%3E%3Cpolygon points='0,-1 0.866,-0.5 0.866,0.5 0,1 -0.866,0.5 -0.866,-0.5' fill='%23e4572e'/%3E%3Cpath d='M0,-1 L0,1 M0.866,-0.5 L-0.866,0.5 M0.866,0.5 L-0.866,-0.5' stroke='%23fff' stroke-width='.07'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/style.css?v=11">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <svg class="logo" viewBox="-1.1 -1.1 2.2 2.2" aria-hidden="true">
+        <polygon points="0,-1 0.866,-0.5 0.866,0.5 0,1 -0.866,0.5 -0.866,-0.5" />
+        <path d="M0,-1 L0,1 M0.866,-0.5 L-0.866,0.5 M0.866,0.5 L-0.866,-0.5" />
+      </svg>
+      <div>
+        <h1 data-i18n="title">ヘクサフレクサゴン工房</h1>
+        <p class="sub" data-i18n="subtitle"></p>
+      </div>
+    </div>
+    <div class="header-controls">
+      <label class="ctl"><span data-i18n="faces">面の数</span>
+        <select id="faceCount"></select>
+      </label>
+      <label class="ctl" id="variantWrap"><span data-i18n="variant">タイプ</span>
+        <select id="variant"></select>
+      </label>
+      <button id="langBtn" class="btn ghost" type="button">English</button>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-tab="images" data-i18n="tabImages" class="active">1. 画像</button>
+    <button role="tab" data-tab="print" data-i18n="tabPrint">2. 展開図</button>
+    <button role="tab" data-tab="steps" data-i18n="tabSteps">3. 作り方</button>
+    <button role="tab" data-tab="sim" data-i18n="tabSim">4. 動かす</button>
+    <button role="tab" data-tab="explain" data-i18n="tabExplain">5. 地図のしくみ</button>
+  </nav>
+
+  <main>
+    <!-- 1. images -->
+    <section id="tab-images" class="tab-panel active">
+      <div class="images-layout">
+        <div class="col">
+          <div class="card">
+            <h2 data-i18n="uploadTitle">画像をアップロード</h2>
+            <label id="dropZone" class="drop-zone">
+              <input id="fileInput" type="file" accept="image/*" multiple hidden>
+              <span class="drop-icon">⬆</span>
+              <span data-i18n="uploadHint"></span>
+            </label>
+            <div class="row between">
+              <h3 data-i18n="gallery">アップロードした画像</h3>
+              <button id="autoAssign" class="btn small" type="button" data-i18n="autoAssign"></button>
+            </div>
+            <div id="gallery" class="gallery"></div>
+            <p id="galleryEmpty" class="muted" data-i18n="galleryEmpty"></p>
+          </div>
+          <div class="card">
+            <h2 data-i18n="faceList">各面の画像</h2>
+            <div id="faceGrid" class="face-grid"></div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card editor-card">
+            <h2 id="editorTitle"></h2>
+            <p class="muted small" data-i18n="editorHint"></p>
+            <div class="editor-wrap"><canvas id="editorCanvas" width="480" height="480"></canvas></div>
+            <div class="slider-row">
+              <label><span data-i18n="zoom">拡大</span>
+                <input id="zoomSlider" type="range" min="-1.5" max="2.5" step="0.01" value="0"></label>
+              <label><span data-i18n="rotation">回転</span>
+                <input id="rotSlider" type="range" min="-180" max="180" step="1" value="0"></label>
+            </div>
+            <div class="row wrap">
+              <button id="rotL" class="btn small" type="button">⟲ 60°</button>
+              <button id="rotR" class="btn small" type="button">⟳ 60°</button>
+              <button id="fitBtn" class="btn small" type="button" data-i18n="fit">ぴったり</button>
+              <span class="spacer"></span>
+              <button id="prevFace" class="btn small ghost" type="button" data-i18n="prevFace"></button>
+              <button id="nextFace" class="btn small ghost" type="button" data-i18n="nextFace"></button>
+            </div>
+            <h3 data-i18n="chooseImage">この面に使う画像：</h3>
+            <div id="imgChoice" class="gallery choice"></div>
+          </div>
+          <div class="card earth-card">
+            <h2 data-i18n="earthTitle">地球の場所を選ぶ</h2>
+            <p class="muted small" data-i18n="earthHint"></p>
+            <div class="world-wrap"><canvas id="worldCanvas" width="960" height="480"></canvas></div>
+            <p id="earthNow" class="small earth-now"></p>
+            <div class="row wrap">
+              <select id="placeSel"></select>
+              <label class="ctl small"><span data-i18n="lat">緯度</span><input id="latIn" type="number" step="0.01" min="-90" max="90"></label>
+              <label class="ctl small"><span data-i18n="lon">経度</span><input id="lonIn" type="number" step="0.01" min="-180" max="180"></label>
+            </div>
+            <div class="row wrap earth-all">
+              <select id="earthAllMode"></select>
+              <button id="earthAll" class="btn small primary" type="button" data-i18n="earthAll"></button>
+            </div>
+            <div class="row wrap">
+              <label class="ctl check small"><input id="earthGrid" type="checkbox" checked> <span data-i18n="earthGrid"></span></label>
+              <label class="ctl check small"><input id="earthMark" type="checkbox" checked> <span data-i18n="earthMark"></span></label>
+              <span class="spacer"></span>
+              <button id="mapBtn" class="btn small ghost" type="button" data-i18n="mapBtn"></button>
+              <button id="mapReset" class="btn small ghost hidden" type="button" data-i18n="mapReset"></button>
+              <input id="mapFile" type="file" accept="image/*" hidden>
+            </div>
+            <p class="muted small" data-i18n="earthCredit"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. print -->
+    <section id="tab-print" class="tab-panel">
+      <div class="card">
+        <h2 data-i18n="printTitle">展開図</h2>
+        <p id="printHint" class="muted"></p>
+        <div class="row wrap print-controls">
+          <label class="ctl"><span data-i18n="printMode">印刷のしかた</span>
+            <select id="printMode"></select></label>
+          <label class="ctl"><span data-i18n="triSize">三角形の一辺</span>
+            <input id="triSize" type="number" min="15" max="90" step="1" value="40"> mm</label>
+          <label class="ctl check"><input id="showNumbers" type="checkbox" checked> <span data-i18n="showNumbers"></span></label>
+          <label class="ctl check"><input id="showFolds" type="checkbox" checked> <span data-i18n="showFoldLines"></span></label>
+          <span class="spacer"></span>
+          <button id="printBtn" class="btn primary" type="button" data-i18n="printBtn">印刷する</button>
+        </div>
+        <p id="pieceInfo" class="muted"></p>
+        <div id="pages" class="pages"></div>
+      </div>
+    </section>
+
+    <!-- 3. steps -->
+    <section id="tab-steps" class="tab-panel">
+      <div class="steps-layout">
+        <div class="card steps-view">
+          <div class="canvas-wrap"><canvas id="stepCanvas" width="900" height="560"></canvas></div>
+          <div class="row wrap step-controls">
+            <button id="stepPrev" class="btn" type="button" data-i18n="prev"></button>
+            <button id="stepPlay" class="btn" type="button" data-i18n="replay"></button>
+            <button id="stepNext" class="btn primary" type="button" data-i18n="next"></button>
+            <span class="spacer"></span>
+            <label class="ctl small"><span data-i18n="viewTilt">視点</span>
+              <input id="stepTilt" type="range" min="0" max="60" value="22"></label>
+            <input id="stepRange" type="range" min="0" max="10" value="0" class="grow">
+          </div>
+        </div>
+        <div class="card step-text">
+          <div id="stepCounter" class="muted small"></div>
+          <h2 id="stepTitle"></h2>
+          <p id="stepDesc"></p>
+          <button id="goSim" class="btn primary hidden" type="button" data-i18n="goSim"></button>
+          <ol id="stepList" class="step-list"></ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. simulator -->
+    <section id="tab-sim" class="tab-panel">
+      <div class="sim-layout">
+        <div class="card sim-main">
+          <div class="canvas-wrap sim-canvas-wrap">
+            <canvas id="simCanvas" width="640" height="560"></canvas>
+            <div class="back-view">
+              <div class="muted small" data-i18n="backView"></div>
+              <canvas id="backCanvas" width="160" height="160"></canvas>
+            </div>
+          </div>
+          <div id="simInfo" class="sim-info"></div>
+          <div class="row wrap sim-controls">
+            <button id="flexA" class="btn flex-a" type="button"></button>
+            <button id="flexB" class="btn flex-b" type="button"></button>
+            <button id="turnBtn" class="btn" type="button" data-i18n="turnOver"></button>
+          </div>
+          <div class="row wrap sim-controls">
+            <button id="undoBtn" class="btn small ghost" type="button" data-i18n="undo"></button>
+            <button id="resetBtn" class="btn small ghost" type="button" data-i18n="reset"></button>
+            <button id="autoBtn" class="btn small" type="button" data-i18n="autoplay"></button>
+            <label class="ctl small"><span data-i18n="speed">速さ</span>
+              <input id="speed" type="range" min="0.4" max="3" step="0.1" value="1"></label>
+            <button id="refBtn" class="btn small ghost" type="button" data-i18n="makeRef"></button>
+          </div>
+          <p class="muted small" data-i18n="pinchHint"></p>
+        </div>
+        <div class="card sim-graph">
+          <h2 data-i18n="graphTitle">遷移グラフ</h2>
+          <div class="canvas-wrap"><canvas id="graphCanvas" width="520" height="520"></canvas></div>
+          <div id="visited" class="muted"></div>
+          <p class="muted small" data-i18n="graphHint"></p>
+          <details>
+            <summary data-i18n="notation">構造（パット表記）</summary>
+            <code id="patNotation" class="notation"></code>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. how the map works -->
+    <section id="tab-explain" class="tab-panel">
+      <div class="card">
+        <h2 data-i18n="exTitle"></h2>
+        <p data-i18n="exIntro"></p>
+        <div class="row wrap ex-controls">
+          <label class="ctl small"><span data-i18n="exPlace"></span><select id="exPlace"></select></label>
+          <label class="ctl small"><span data-i18n="exRange"></span><input id="exR" type="range" min="20" max="160" value="90"><span id="exRval"></span></label>
+          <label class="ctl check small"><input id="exTissot" type="checkbox" checked> <span data-i18n="exTissot"></span></label>
+        </div>
+        <div class="ex-pipeline">
+          <figure><canvas id="exGlobe"></canvas><figcaption><b data-i18n="exCapGlobe"></b><span data-i18n="exCapGlobe2"></span></figcaption></figure>
+          <div class="ex-arrow"><span>→</span><small data-i18n="exArrow1"></small></div>
+          <figure><canvas id="exDisk"></canvas><figcaption><b data-i18n="exCapDisk"></b><span data-i18n="exCapDisk2"></span></figcaption></figure>
+          <div class="ex-arrow"><span>→</span><small data-i18n="exArrow2"></small></div>
+          <figure><canvas id="exHex"></canvas><figcaption><b data-i18n="exCapHex"></b><span data-i18n="exCapHex2"></span></figcaption></figure>
+        </div>
+        <p id="exHoverInfo" class="muted small ex-hover"></p>
+      </div>
+
+      <div class="ex-cards">
+        <div class="card">
+          <h3 data-i18n="exQ1"></h3>
+          <svg class="ex-svg" viewBox="0 0 240 120" aria-hidden="true">
+            <g fill="none" stroke-width="2">
+              <path d="M20 95 L70 40 L120 95" stroke="#2e86ab"/>
+              <path d="M52 95 A 30 30 0 0 1 36 77" stroke="#e4572e"/>
+              <path d="M140 100 C 160 70, 175 40, 210 30 M140 100 C 175 95, 200 80, 225 50" stroke="#2e86ab" opacity=".35"/>
+              <path d="M150 88 L178 62 L204 86" stroke="#2e86ab"/>
+              <path d="M170 70 A 11 11 0 0 1 186 70" stroke="#e4572e"/>
+            </g>
+            <text x="58" y="112" font-size="11" text-anchor="middle" fill="currentColor">θ</text>
+            <text x="178" y="112" font-size="11" text-anchor="middle" fill="currentColor">θ</text>
+            <text x="120" y="60" font-size="16" text-anchor="middle" fill="currentColor">→</text>
+          </svg>
+          <p data-i18n="exA1"></p>
+        </div>
+        <div class="card">
+          <h3 data-i18n="exQ2"></h3>
+          <p data-i18n="exA2"></p>
+        </div>
+        <div class="card">
+          <h3 data-i18n="exQ3"></h3>
+          <svg class="ex-svg" viewBox="-130 -78 260 170" aria-hidden="true">
+            <line x1="-125" y1="0" x2="125" y2="0" stroke="#9aa3b2" stroke-width="1.5"/>
+            <circle cx="0" cy="0" r="60" fill="rgba(46,134,171,.12)" stroke="#2e86ab" stroke-width="2"/>
+            <g stroke="#e4572e" stroke-width="1.3" fill="none">
+              <line x1="0" y1="60" x2="42.4" y2="-42.4"/><line x1="0" y1="60" x2="-56.4" y2="-20.5"/>
+            </g>
+            <g fill="#e4572e"><circle cx="42.4" cy="-42.4" r="3.5"/><circle cx="-56.4" cy="-20.5" r="3.5"/></g>
+            <g fill="#7a3cff"><circle cx="24.85" cy="0" r="3.5"/><circle cx="-42" cy="0" r="3.5"/></g>
+            <circle cx="0" cy="-60" r="4" fill="#ffcf33" stroke="#333"/>
+            <circle cx="0" cy="60" r="4" fill="#333"/>
+            <text x="8" y="-64" font-size="11" fill="currentColor" data-i18n="exSvgC"></text>
+            <text x="8" y="76" font-size="11" fill="currentColor" data-i18n="exSvgS"></text>
+            <text x="78" y="-6" font-size="11" fill="currentColor" data-i18n="exSvgPlane"></text>
+          </svg>
+          <p data-i18n="exA3"></p>
+        </div>
+        <div class="card">
+          <h3 data-i18n="exQ4"></h3>
+          <p class="formula">f(z) = C ∫<sub>0</sub><sup>z</sup> (1 − t<sup>6</sup>)<sup>−1/3</sup> dt</p>
+          <p data-i18n="exA4"></p>
+        </div>
+        <div class="card">
+          <h3 data-i18n="exQ5"></h3>
+          <p data-i18n="exA5"></p>
+        </div>
+        <div class="card">
+          <h3 data-i18n="exQ6"></h3>
+          <p data-i18n="exA6"></p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 data-i18n="scTitle"></h2>
+        <p data-i18n="scIntro"></p>
+        <div class="row wrap ex-controls">
+          <label class="ctl small"><span data-i18n="scN"></span><input id="scN" type="range" min="3" max="8" step="1" value="6"><b id="scNval">6</b></label>
+          <label class="ctl small"><span data-i18n="scBend"></span><input id="scBend" type="range" min="0" max="1.4" step="0.01" value="1"></label>
+          <button id="scPlay" class="btn small primary" type="button" data-i18n="scPlay"></button>
+        </div>
+        <p class="formula" id="scFormula"></p>
+        <div class="ex-pipeline sc">
+          <figure><canvas id="scDisk"></canvas><figcaption data-i18n="scCapDisk"></figcaption></figure>
+          <div class="ex-arrow"><span>→</span><small>f</small></div>
+          <figure><canvas id="scImg"></canvas><figcaption id="scInfo"></figcaption></figure>
+        </div>
+        <p class="muted small" data-i18n="scHint"></p>
+      </div>
+      <p class="muted small" data-i18n="exCredit"></p>
+    </section>
+  </main>
+
+  <footer class="muted small">
+    <span data-i18n="footer"></span>
+    <br><a href="https://github.com/shizuo-kaji/worldhexaflex" data-i18n="sourceLink">GitHub</a>
+  </footer>
+
+  <div id="printArea" aria-hidden="true"></div>
+
+  <script src="js/i18n.js?v=11"></script>
+  <script src="js/flexagon.js?v=11"></script>
+  <script src="js/design.js?v=11"></script>
+  <script src="js/render.js?v=11"></script>
+  <script src="js/worlddata.js?v=11"></script>
+  <script src="js/earth.js?v=11"></script>
+  <script src="js/explain.js?v=11"></script>
+  <script src="js/app.js?v=11"></script>
+</body>
+</html>
